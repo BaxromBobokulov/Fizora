@@ -1,0 +1,97 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+/**
+ * Fizora design system tokens.
+ * Keep in sync with constants/theme/ — this file drives Tailwind utility
+ * classes (bg-*, text-*, border-*, font-*), the TS files drive anywhere
+ * NativeWind can't reach (StyleSheet, SVG, native-only components).
+ */
+@layer theme {
+  @theme {
+    /* Brand — primary */
+    --color-fizora-orange: #ff7a00;
+    --color-fizora-purple: #6c4eff;
+    --color-fizora-blue: #428bff;
+    --color-fizora-green: #22c55e;
+
+    /* Semantic */
+    --color-success: #22c55e;
+    --color-warning: #fbbf24;
+    --color-energy: #ff7a00;
+    --color-error: #ff4d4f;
+    --color-info: #428bff;
+
+    /* Neutrals */
+    --color-text-primary: #0d132b;
+    --color-text-secondary: #6b7280;
+    --color-border: #e5e7eb;
+    --color-surface: #f6f7fb;
+    --color-background: #ffffff;
+
+    /* Typography — Poppins, loaded via useFonts() in app/_layout.tsx.
+       Custom-named weights compile to plain literal fontFamily values and
+       are safe here. Regular weight is deliberately NOT registered as
+       `--font-sans` — see the @layer utilities block for why. */
+    --font-poppins-regular: "Poppins_400Regular";
+    --font-poppins-medium: "Poppins_500Medium";
+    --font-poppins-semibold: "Poppins_600SemiBold";
+    --font-poppins-bold: "Poppins_700Bold";
+  }
+}
+
+/**
+ * The `text-h1`…`text-caption` scale is written as plain utility classes
+ * instead of @theme tokens on purpose. Tailwind compiles any registered
+ * `--text-*`/`--text-*--line-height` pair through a live CSS-variable
+ * lookup ("dv": true in the compiled output) rather than a literal value.
+ * On native, react-native-css v3 has a known bug (nativewind/nativewind#1662)
+ * where a var-based rule and a literal rule (e.g. a `text-fizora-orange`
+ * color) landing on the same element silently drop the literal one — colors
+ * vanish while sizes/weights still apply. Plain classes here compile to
+ * literal {fontSize, lineHeight} objects, same shape as the color
+ * utilities, so they merge safely.
+ *
+ * Same reasoning is why regular-weight Poppins is `font-poppins-regular`
+ * rather than `font-sans`: `font-sans` is a *built-in* Tailwind utility
+ * name (backed by a platform-conditional system-font var), so even a
+ * hand-written override here loses the cascade to Tailwind's own generated
+ * rule. Using a non-reserved name sidesteps the collision entirely.
+ */
+@layer utilities {
+  .text-h1 {
+    font-size: 32px;
+    line-height: 38.4px;
+  }
+  .text-h2 {
+    font-size: 24px;
+    line-height: 31.2px;
+  }
+  .text-h3 {
+    font-size: 20px;
+    line-height: 26px;
+  }
+  .text-h4 {
+    font-size: 16px;
+    line-height: 22.4px;
+  }
+  .text-body-lg {
+    font-size: 16px;
+    line-height: 25.6px;
+  }
+  .text-body-md {
+    font-size: 14px;
+    line-height: 22.4px;
+  }
+  .text-body-sm {
+    font-size: 13px;
+    line-height: 20.8px;
+  }
+  .text-caption {
+    font-size: 11px;
+    line-height: 15.4px;
+  }
+}
