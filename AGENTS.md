@@ -569,3 +569,55 @@ Before every feature implementation:
 - Build clean, simple, teachable code
 - Replicate UI exactly when designs are provided
 - Keep Tulki's character and physics accuracy consistent — those are the two things that make this app trustworthy to students
+
+
+
+## Progress State Rules (Zustand)
+
+All gamification and session state (XP, level, streak, last active lab, 
+completed labs) must live in a single Zustand store: `store/useProgressStore.ts`.
+
+### Store shape
+
+```ts
+type ProgressState = {
+  xp: number;
+  level: number;
+  currentLevelXp: number;      // XP earned within the current level
+  nextLevelXpTarget: number;   // XP required to reach next level
+  streakCount: number;
+  lastActiveDate: string | null;  // ISO date, used to compute streak
+  lastActiveLabId: string | null; // for "Continue Experiment"
+  completedLabIds: string[];
+
+  addXp: (amount: number) => void;
+  completeLab: (labId: string) => void;
+  hasEverCompletedLab: () => boolean; // derives empty-state
+};
+```
+
+### Rules
+
+- Never hardcode XP, level, or streak values in screen components 
+  (e.g. no `const XP_BALANCE = 120` in `index.tsx`). Screens must read 
+  this state via the store's selectors only.
+- `progressPercent` (used for the XP bar width) must be **computed**, 
+  not stored — derive it from `currentLevelXp / nextLevelXpTarget` at 
+  render time or via a selector, never persist a pre-calculated percentage.
+- Persist the full store to AsyncStorage (via Zustand's `persist` 
+  middleware) so progress survives app restarts — this is local-first 
+  storage, independent of backend sync (see Offline-First Rules).
+- **Streak logic**: on `completeLab`, compare `lastActiveDate` to 
+  today's date:
+  - same day → no streak change
+  - yesterday → `streakCount += 1`
+  - more than 1 day ago → `streakCount` resets to 1
+  - Always update `lastActiveDate` to today after any completion.
+- **Empty state detection**: a user is "first-time" when 
+  `completedLabIds.length === 0` AND `lastActiveLabId === null`. Any 
+  screen that shows "Continue Experiment" must check this condition 
+  and render an appropriate first-time variant instead — never assume 
+  a lab is in progress.
+- Keep streak/XP calculation logic inside the store itself (actions), 
+  not inside components — components only call `addXp()` / 
+  `completeLab()` and read derived values.

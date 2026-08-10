@@ -7,6 +7,12 @@ import streakFire from "@/assets/images/streak-fire.png";
 import treasure from "@/assets/images/treasure.png";
 import newtonsCradleToy from "@/assets/images/01-toy.png";
 import pendulumToy from "@/assets/images/02-toy.png";
+import homeLearningProgress from "@/assets/images/homeui-learning-progress.png";
+import homePendulumToy from "@/assets/images/homeui-pendalum-toy.png";
+import homeGravity from "@/assets/images/homeui-gravity.png";
+import homeElectricity from "@/assets/images/homeui-electricity.png";
+import homeMagnetism from "@/assets/images/homeui-magenism.png";
+import homeAiTeacher from "@/assets/images/homeui-aiteacher.png";
 
 export const images = {
   mascotLogo,
@@ -18,4 +24,10 @@ export const images = {
   treasure,
   newtonsCradleToy,
   pendulumToy,
+  homeLearningProgress,
+  homePendulumToy,
+  homeGravity,
+  homeElectricity,
+  homeMagnetism,
+  homeAiTeacher,
 };
