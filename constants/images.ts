@@ -13,6 +13,11 @@ import homeGravity from "@/assets/images/homeui-gravity.png";
 import homeElectricity from "@/assets/images/homeui-electricity.png";
 import homeMagnetism from "@/assets/images/homeui-magenism.png";
 import homeAiTeacher from "@/assets/images/homeui-aiteacher.png";
+import tulkiLabsHeader from "@/assets/images/labs-ui/header-labs-moscot.png";
+import dailyChallengeTrophy from "@/assets/images/labs-ui/daily-challange.png";
+import newtonsFirstLawToy from "@/assets/images/labs-ui/newton-fist-law-toy.png";
+import opticsLabIcon from "@/assets/images/labs-ui/optucs-lab.png";
+import wavesLabIcon from "@/assets/images/labs-ui/waves-lab.png";
 
 export const images = {
   mascotLogo,
@@ -30,4 +35,9 @@ export const images = {
   homeElectricity,
   homeMagnetism,
   homeAiTeacher,
+  tulkiLabsHeader,
+  dailyChallengeTrophy,
+  newtonsFirstLawToy,
+  opticsLabIcon,
+  wavesLabIcon,
 };

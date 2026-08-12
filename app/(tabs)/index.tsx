@@ -7,12 +7,16 @@ import { useUser } from "@clerk/expo";
 import { images } from "@/constants/images";
 import { neutralColors, primaryColors } from "@/constants/theme/colors";
 import { QuickLabCard } from "@/components/home/QuickLabCard";
+import { useProgressStore } from "@/store/useProgressStore";
 
-const XP_BALANCE = 120;
-const LEVEL = 8;
-const CURRENT_XP = 320;
-const NEXT_LEVEL_XP = 500;
-const PROGRESS_PERCENT = Math.round((CURRENT_XP / NEXT_LEVEL_XP) * 100);
+// The only lab wired up with real content so far — swap for a data/physics
+// lookup by lastActiveLabId once more labs exist.
+const STARTER_LAB = {
+  id: "pendulum-motion",
+  title: "Pendulum Motion",
+  description: "Study the motion of a pendulum and understand its principles.",
+  image: images.homePendulumToy,
+};
 
 const QUICK_LABS = [
   {
@@ -48,7 +52,16 @@ export default function Home() {
   const router = useRouter();
   const { user } = useUser();
 
+  const xp = useProgressStore((state) => state.xp);
+  const level = useProgressStore((state) => state.level);
+  const currentLevelXp = useProgressStore((state) => state.currentLevelXp);
+  const nextLevelXpTarget = useProgressStore((state) => state.nextLevelXpTarget);
+  const streakCount = useProgressStore((state) => state.streakCount);
+  const hasEverCompletedLab = useProgressStore((state) => state.hasEverCompletedLab);
+
   const firstName = user?.firstName ?? "Alex";
+  const progressPercent = Math.round((currentLevelXp / nextLevelXpTarget) * 100);
+  const isFirstTimeUser = !hasEverCompletedLab();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
@@ -77,9 +90,18 @@ export default function Home() {
             <View className="flex-row items-center gap-1.5 rounded-full border border-gray-100 bg-white px-3 py-2">
               <Ionicons name="flask" size={16} color={primaryColors.purple} />
               <Text className="text-[14px] font-poppins-bold text-text-primary">
-                {XP_BALANCE}
+                {xp}
               </Text>
             </View>
+
+            {streakCount > 0 && (
+              <View className="flex-row items-center gap-1.5 rounded-full border border-gray-100 bg-white px-3 py-2">
+                <Ionicons name="flame" size={16} color={primaryColors.orange} />
+                <Text className="text-[14px] font-poppins-bold text-text-primary">
+                  {streakCount}
+                </Text>
+              </View>
+            )}
 
             <View className="h-10 w-10 items-center justify-center rounded-full border border-gray-100 bg-white relative">
               <Ionicons name="notifications-outline" size={20} color="#0D132B" />
@@ -98,20 +120,20 @@ export default function Home() {
               Learning Progress
             </Text>
             <Text className="mt-1 text-[24px] font-poppins-bold text-[#0D132B]">
-              Level {LEVEL}
+              Level {level}
             </Text>
             <View className="mt-1 flex-row items-baseline gap-1">
               <Text className="text-[15px] font-poppins-bold" style={{ color: primaryColors.purple }}>
-                {CURRENT_XP}
+                {currentLevelXp}
               </Text>
               <Text className="text-[13px] font-poppins-medium text-[#6B7280]">
-                / {NEXT_LEVEL_XP} XP
+                / {nextLevelXpTarget} XP
               </Text>
             </View>
             <View className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[#F6F7FB]">
               <View
                 className="h-2 rounded-full"
-                style={{ width: `${PROGRESS_PERCENT}%`, backgroundColor: primaryColors.purple }}
+                style={{ width: `${progressPercent}%`, backgroundColor: primaryColors.purple }}
               />
             </View>
           </View>
@@ -130,13 +152,13 @@ export default function Home() {
         >
           <View className="w-[65%] z-10">
             <Text className="text-[12px] font-poppins-medium text-white/80">
-              Continue Experiment
+              {isFirstTimeUser ? "Start Your First Experiment" : "Continue Experiment"}
             </Text>
             <Text className="mt-1 text-[22px] font-poppins-bold text-white leading-tight">
-              Pendulum Motion
+              {STARTER_LAB.title}
             </Text>
             <Text className="mt-2 text-[12px] font-poppins-regular text-white/80 leading-tight">
-              Study the motion of a pendulum and understand its principles.
+              {STARTER_LAB.description}
             </Text>
 
             <TouchableOpacity
@@ -148,7 +170,7 @@ export default function Home() {
                 className="text-[14px] font-poppins-bold"
                 style={{ color: primaryColors.purple }}
               >
-                Continue
+                {isFirstTimeUser ? "Start" : "Continue"}
               </Text>
               <Ionicons name="chevron-forward" size={16} color={primaryColors.purple} />
             </TouchableOpacity>
@@ -156,7 +178,7 @@ export default function Home() {
 
           {/* Absolute pozitsiya qutini cho'zib yubormaydi */}
           <Image
-            source={images.homePendulumToy}
+            source={STARTER_LAB.image}
             className="absolute bottom-2 -right-0 h-36 w-36 z-0"
             resizeMode="contain"
           />
