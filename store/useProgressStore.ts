@@ -14,11 +14,26 @@ type ProgressState = {
   lastActiveDate: string | null;
   lastActiveLabId: string | null;
   completedLabIds: string[];
+  hoursLearned: number;
+  achievementsCount: number;
 
   addXp: (amount: number) => void;
   completeLab: (labId: string) => void;
   hasEverCompletedLab: () => boolean;
 };
+
+// Shared so any screen showing the XP bar (Home's Learning Progress card,
+// Profile's Level card) derives the same percentage instead of each
+// re-deriving it inline.
+export function xpProgressPercent(currentLevelXp: number, nextLevelXpTarget: number): number {
+  return nextLevelXpTarget === 0 ? 0 : Math.round((currentLevelXp / nextLevelXpTarget) * 100);
+}
+
+export function useXpProgressPercent(): number {
+  const currentLevelXp = useProgressStore((state) => state.currentLevelXp);
+  const nextLevelXpTarget = useProgressStore((state) => state.nextLevelXpTarget);
+  return xpProgressPercent(currentLevelXp, nextLevelXpTarget);
+}
 
 // "YYYY-MM-DD" in the device's local time — Date#toISOString() rolls over at
 // UTC midnight instead of the student's actual midnight, which would corrupt
@@ -83,6 +98,8 @@ export const useProgressStore = create<ProgressState>()(
       lastActiveDate: null,
       lastActiveLabId: null,
       completedLabIds: [],
+      hoursLearned: 0,
+      achievementsCount: 0,
 
       addXp: (amount) => {
         set((state) => applyXp(state, amount));

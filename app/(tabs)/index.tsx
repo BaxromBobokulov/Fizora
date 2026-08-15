@@ -7,7 +7,7 @@ import { useUser } from "@clerk/expo";
 import { images } from "@/constants/images";
 import { neutralColors, primaryColors } from "@/constants/theme/colors";
 import { QuickLabCard } from "@/components/home/QuickLabCard";
-import { useProgressStore } from "@/store/useProgressStore";
+import { useProgressStore, useXpProgressPercent } from "@/store/useProgressStore";
 
 // The only lab wired up with real content so far — swap for a data/physics
 // lookup by lastActiveLabId once more labs exist.
@@ -60,33 +60,41 @@ export default function Home() {
   const hasEverCompletedLab = useProgressStore((state) => state.hasEverCompletedLab);
 
   const firstName = user?.firstName ?? "Alex";
-  const progressPercent = Math.round((currentLevelXp / nextLevelXpTarget) * 100);
+  const progressPercent = useXpProgressPercent();
   const isFirstTimeUser = !hasEverCompletedLab();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: neutralColors.surface }}>
       <ScrollView
-        contentContainerClassName="px-5 pb-10 pt-2"
+        contentContainerClassName="px-5 pb-14 pt-2"
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
         <View className="flex-row items-center justify-between">
-          <View className="flex-1 flex-row items-center gap-3">
+          <View className="flex-1 flex-row items-center gap-3 mt-2">
             <Image
               source={user?.imageUrl ? { uri: user.imageUrl } : images.mascotAuth}
               className="h-12 w-12 rounded-full"
             />
-            <View>
-              <Text className="text-[18px] font-poppins-bold text-[#0D132B]">
+            <View className="flex-1 min-w-0">
+              <Text
+                className="text-[18px] font-poppins-bold text-[#0D132B]"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 Hello, {firstName}! 👋
               </Text>
-              <Text className="text-[13px] font-poppins-medium text-[#6B7280]">
-                Ready to explore today?
+              <Text
+                className="text-[13px] font-poppins-medium text-[#6B7280]"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                Ready to explore today
               </Text>
             </View>
           </View>
 
-          <View className="flex-row items-center gap-2">
+          <View className="flex-row items-center gap-2 shrink-0">
             <View className="flex-row items-center gap-1.5 rounded-full border border-gray-100 bg-white px-3 py-2">
               <Ionicons name="flask" size={16} color={primaryColors.purple} />
               <Text className="text-[14px] font-poppins-bold text-text-primary">
