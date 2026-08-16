@@ -5,6 +5,7 @@ import type { Lab } from "@/types/lab";
 export const wavesLabs: Lab[] = [
   {
     id: "wave-interference",
+    subject: "physics",
     topic: "waves",
     title: "Wave Interference",
     description:
@@ -21,6 +22,7 @@ export const wavesLabs: Lab[] = [
   },
   {
     id: "simple-harmonic-motion",
+    subject: "physics",
     topic: "waves",
     title: "Simple Harmonic Motion",
     description:
@@ -37,6 +39,7 @@ export const wavesLabs: Lab[] = [
   },
   {
     id: "sound-wave-frequency",
+    subject: "physics",
     topic: "waves",
     title: "Sound Wave Frequency",
     description: "Change frequency and amplitude to see how sound waves are shaped.",
@@ -51,6 +54,7 @@ export const wavesLabs: Lab[] = [
   },
   {
     id: "standing-waves",
+    subject: "physics",
     topic: "waves",
     title: "Standing Waves on a String",
     description: "Create standing waves on a string and measure wavelength and nodes.",

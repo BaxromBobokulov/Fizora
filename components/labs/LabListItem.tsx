@@ -2,7 +2,7 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { neutralColors } from "@/constants/theme/colors";
-import { getTopicById } from "@/data/physics";
+import { SUBJECT_META } from "@/constants/subjects";
 import type { Lab } from "@/types/lab";
 import { LabStatusBadge, type LabStatus } from "./LabStatusBadge";
 
@@ -13,7 +13,7 @@ type LabListItemProps = {
 };
 
 export function LabListItem({ lab, status, onPress }: LabListItemProps) {
-  const topic = getTopicById(lab.topic);
+  const subject = SUBJECT_META[lab.subject];
 
   return (
     <TouchableOpacity
@@ -31,7 +31,7 @@ export function LabListItem({ lab, status, onPress }: LabListItemProps) {
           className="mt-0.5 text-[11px] font-poppins-medium"
           style={{ color: neutralColors.textSecondary }}
         >
-          {topic?.title ?? "Physics"} · {lab.durationMinutes} min
+          {subject.label} · {lab.durationMinutes} min
         </Text>
         {status !== "not-started" && (
           <View className="mt-1.5">

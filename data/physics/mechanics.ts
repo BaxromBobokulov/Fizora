@@ -4,6 +4,7 @@ import type { Lab } from "@/types/lab";
 export const mechanicsLabs: Lab[] = [
   {
     id: "newtons-first-law",
+    subject: "physics",
     topic: "mechanics",
     title: "Newton's First Law",
     description:
@@ -20,6 +21,7 @@ export const mechanicsLabs: Lab[] = [
   },
   {
     id: "pendulum-motion",
+    subject: "physics",
     topic: "mechanics",
     title: "Pendulum Motion",
     description: "Study the motion of a pendulum and understand its principles.",
@@ -35,6 +37,7 @@ export const mechanicsLabs: Lab[] = [
   },
   {
     id: "projectile-motion",
+    subject: "physics",
     topic: "mechanics",
     title: "Projectile Motion",
     description: "Launch objects and analyze trajectory, range, and max height.",
@@ -51,6 +54,7 @@ export const mechanicsLabs: Lab[] = [
   },
   {
     id: "free-fall-gravity",
+    subject: "physics",
     topic: "mechanics",
     title: "Free Fall & Gravity",
     description: "Drop objects and measure acceleration due to gravity.",

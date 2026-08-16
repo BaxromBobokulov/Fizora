@@ -6,14 +6,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 import { neutralColors, primaryColors } from "@/constants/theme/colors";
-import { allLabs, getLabsByTopic, topics } from "@/data/physics";
+import { EXPLORE_SUBJECT_ORDER, SUBJECT_META } from "@/constants/subjects";
+import { allExperiments, getExperimentsBySubject } from "@/data/labs";
 import { useProgressStore } from "@/store/useProgressStore";
-import type { Lab } from "@/types/lab";
+import { useSavedLabsStore } from "@/store/useSavedLabsStore";
+import type { Lab, LabSubject } from "@/types/lab";
 
 import { SearchBar } from "@/components/labs/SearchBar";
 import { CategoryChips, type CategoryFilter } from "@/components/labs/CategoryChips";
 import { FeaturedLabCard } from "@/components/labs/FeaturedLabCard";
-import { TopicCard } from "@/components/labs/TopicCard";
+import { SubjectCard } from "@/components/labs/SubjectCard";
 import { ProgressSummaryCard } from "@/components/labs/ProgressSummaryCard";
 import { DailyChallengeCard } from "@/components/labs/DailyChallengeCard";
 import { LabListItem } from "@/components/labs/LabListItem";
@@ -30,43 +32,46 @@ export default function Labs() {
 
   const completedLabIds = useProgressStore((state) => state.completedLabIds);
   const lastActiveLabId = useProgressStore((state) => state.lastActiveLabId);
+  const savedLabIds = useSavedLabsStore((state) => state.savedLabIds);
 
   const getStatus = (labId: string) => getLabStatus(labId, completedLabIds, lastActiveLabId);
 
   const trimmedQuery = searchQuery.trim().toLowerCase();
   const isSearching = trimmedQuery.length > 0;
 
+  const categoryPool = useMemo(() => {
+    if (selectedCategory === "all") return allExperiments;
+    if (selectedCategory === "saved") {
+      return allExperiments.filter((lab) => savedLabIds.includes(lab.id));
+    }
+    return getExperimentsBySubject(selectedCategory);
+  }, [selectedCategory, savedLabIds]);
+
   const searchResults = useMemo(() => {
     if (!isSearching) return [];
-    return allLabs.filter(
-      (lab) =>
-        lab.title.toLowerCase().includes(trimmedQuery) &&
-        (selectedCategory === "all" || lab.topic === selectedCategory)
-    );
-  }, [isSearching, trimmedQuery, selectedCategory]);
+    return categoryPool.filter((lab) => lab.title.toLowerCase().includes(trimmedQuery));
+  }, [isSearching, trimmedQuery, categoryPool]);
 
-  const categoryPool = useMemo(
-    () => (selectedCategory === "all" ? allLabs : getLabsByTopic(selectedCategory)),
-    [selectedCategory]
-  );
-
+  // One featured lab per subject: the first uncompleted lab in that subject,
+  // falling back to the subject's first lab once everything is completed.
   const featuredLabs = useMemo(() => {
-    const uncompleted = categoryPool.filter((lab) => !completedLabIds.includes(lab.id));
-    const completed = categoryPool.filter((lab) => completedLabIds.includes(lab.id));
-    return [...uncompleted, ...completed].slice(0, 4);
-  }, [categoryPool, completedLabIds]);
+    return EXPLORE_SUBJECT_ORDER.map((subject) => {
+      const subjectLabs = getExperimentsBySubject(subject);
+      return subjectLabs.find((lab) => !completedLabIds.includes(lab.id)) ?? subjectLabs[0];
+    }).filter((lab): lab is Lab => Boolean(lab));
+  }, [completedLabIds]);
 
-  const completedTotal = allLabs.filter((lab) => completedLabIds.includes(lab.id)).length;
+  const completedTotal = allExperiments.filter((lab) => completedLabIds.includes(lab.id)).length;
 
   const nextUncompletedLab: Lab | undefined =
-    allLabs.find((lab) => !completedLabIds.includes(lab.id)) ?? allLabs[0];
+    allExperiments.find((lab) => !completedLabIds.includes(lab.id)) ?? allExperiments[0];
 
   function openLab(lab: Lab) {
     router.push(`/lab/${lab.dimension}/${lab.id}` as never);
   }
 
-  function openTopic(topicId: (typeof topics)[number]["id"]) {
-    const firstLab = getLabsByTopic(topicId)[0];
+  function openSubject(subject: LabSubject) {
+    const firstLab = getExperimentsBySubject(subject)[0];
     if (firstLab) openLab(firstLab);
   }
 
@@ -82,7 +87,7 @@ export default function Labs() {
           <View className="flex-1 pr-3">
             <Text className="text-[28px] font-poppins-bold text-[#0D132B] mt-2">Labs</Text>
             <Text className="mt-1 text-[12px] font-poppins-medium text-[#6B7280] w-[200px]">
-              Explore experiments and learn physics by doing.
+              Explore experiments and learn science by doing.
             </Text>
           </View>
           <HeaderMascot/>
@@ -118,6 +123,16 @@ export default function Labs() {
               ))
             )}
           </View>
+        ) : selectedCategory === "saved" && categoryPool.length === 0 ? (
+          <View className="mt-10 items-center gap-2 px-6">
+            <Ionicons name="bookmark-outline" size={28} color={neutralColors.textSecondary} />
+            <Text className="text-center text-[13px] font-poppins-bold text-[#0D132B]">
+              No saved experiments yet
+            </Text>
+            <Text className="text-center text-[12px] font-poppins-medium text-[#6B7280]">
+              Experiments you save will show up here.
+            </Text>
+          </View>
         ) : (
           <>
             {/* Featured Lab */}
@@ -138,9 +153,11 @@ export default function Labs() {
               <FeaturedLabCard labs={featuredLabs} getStatus={getStatus} onPressLab={openLab} />
             </View>
 
-            {/* Topics */}
+            {/* Explore by Subject */}
             <View className="mt-7 flex-row items-center justify-between">
-              <Text className="text-[18px] font-poppins-bold text-[#0D132B]">Topics</Text>
+              <Text className="text-[18px] font-poppins-bold text-[#0D132B]">
+                Explore by Subject
+              </Text>
               <TouchableOpacity activeOpacity={0.7} className="flex-row items-center gap-0.5">
                 <Text
                   className="text-[13px] font-poppins-bold"
@@ -152,32 +169,27 @@ export default function Labs() {
               </TouchableOpacity>
             </View>
 
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              className="mt-3"
-              contentContainerClassName="gap-2 pr-1"
-            >
-              {topics.map((topic) => {
-                const topicLabs = getLabsByTopic(topic.id);
-                const topicCompleted = topicLabs.filter((lab) =>
+            <View className="mt-3 flex-row gap-2">
+              {EXPLORE_SUBJECT_ORDER.map((subject) => {
+                const subjectLabs = getExperimentsBySubject(subject);
+                const subjectCompleted = subjectLabs.filter((lab) =>
                   completedLabIds.includes(lab.id)
                 ).length;
 
                 return (
-                  <TopicCard
-                    key={topic.id}
-                    topic={topic}
-                    experimentCount={topicLabs.length}
-                    completedCount={topicCompleted}
-                    onPress={() => openTopic(topic.id)}
+                  <SubjectCard
+                    key={subject}
+                    subject={SUBJECT_META[subject]}
+                    experimentCount={subjectLabs.length}
+                    completedCount={subjectCompleted}
+                    onPress={() => openSubject(subject)}
                   />
                 );
               })}
-            </ScrollView>
+            </View>
 
             {/* Your Progress */}
-            <ProgressSummaryCard completedCount={completedTotal} totalCount={allLabs.length} />
+            <ProgressSummaryCard completedCount={completedTotal} totalCount={allExperiments.length} />
 
             {/* Daily Challenge */}
             <DailyChallengeCard

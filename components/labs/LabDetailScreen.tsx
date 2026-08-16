@@ -4,7 +4,8 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { neutralColors, primaryColors } from "@/constants/theme/colors";
-import { getLabById, getTopicById } from "@/data/physics";
+import { SUBJECT_META } from "@/constants/subjects";
+import { getExperimentById } from "@/data/labs";
 import { useProgressStore } from "@/store/useProgressStore";
 import { getLabStatus, LabStatusBadge } from "./LabStatusBadge";
 
@@ -14,7 +15,7 @@ type LabDetailScreenProps = {
 
 export function LabDetailScreen({ labId }: LabDetailScreenProps) {
   const router = useRouter();
-  const lab = labId ? getLabById(labId) : undefined;
+  const lab = labId ? getExperimentById(labId) : undefined;
 
   const completedLabIds = useProgressStore((state) => state.completedLabIds);
   const lastActiveLabId = useProgressStore((state) => state.lastActiveLabId);
@@ -33,7 +34,7 @@ export function LabDetailScreen({ labId }: LabDetailScreenProps) {
     );
   }
 
-  const topic = getTopicById(lab.topic);
+  const subject = SUBJECT_META[lab.subject];
   const status = getLabStatus(lab.id, completedLabIds, lastActiveLabId);
 
   return (
@@ -52,9 +53,9 @@ export function LabDetailScreen({ labId }: LabDetailScreenProps) {
         <View className="mt-4 flex-row items-center gap-2">
           <Text
             className="text-[13px] font-poppins-bold"
-            style={{ color: topic?.color ?? primaryColors.purple }}
+            style={{ color: subject.color }}
           >
-            {topic?.title ?? "Physics"}
+            {subject.label}
           </Text>
           <LabStatusBadge status={status} />
         </View>

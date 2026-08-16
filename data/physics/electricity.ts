@@ -4,6 +4,7 @@ import type { Lab } from "@/types/lab";
 export const electricityLabs: Lab[] = [
   {
     id: "ohms-law",
+    subject: "physics",
     topic: "electricity",
     title: "Ohm's Law Circuit",
     description:
@@ -19,6 +20,7 @@ export const electricityLabs: Lab[] = [
   },
   {
     id: "series-parallel-circuits",
+    subject: "physics",
     topic: "electricity",
     title: "Series & Parallel Circuits",
     description:
@@ -36,6 +38,7 @@ export const electricityLabs: Lab[] = [
   },
   {
     id: "capacitor-charging",
+    subject: "physics",
     topic: "electricity",
     title: "Capacitor Charging & Discharging",
     description:
@@ -53,6 +56,7 @@ export const electricityLabs: Lab[] = [
   },
   {
     id: "electromagnetic-induction",
+    subject: "physics",
     topic: "electricity",
     title: "Electromagnetic Induction",
     description: "Move a magnet through a coil and generate an induced current.",

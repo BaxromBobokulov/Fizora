@@ -1,19 +1,18 @@
-import { useState } from "react";
 import {
   Image,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-  useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { primaryColors } from "@/constants/theme/colors";
-import { getTopicById } from "@/data/physics";
+import { SUBJECT_META } from "@/constants/subjects";
+import { useCarouselPaging } from "@/hooks/useCarouselPaging";
+import { CarouselDots } from "@/components/shared/CarouselDots";
 import type { Lab } from "@/types/lab";
+import { CategoryIcon } from "./CategoryIcon";
 import { LabStatusBadge, type LabStatus } from "./LabStatusBadge";
 
 const SCREEN_PADDING = 30; // matches the screen's px-5 (20px) on each side
@@ -30,16 +29,9 @@ type FeaturedLabCardProps = {
 };
 
 export function FeaturedLabCard({ labs, getStatus, onPressLab }: FeaturedLabCardProps) {
-  const { width } = useWindowDimensions();
-  const cardWidth = width - SCREEN_PADDING;
-  const [activeIndex, setActiveIndex] = useState(0);
+  const { cardWidth, activeIndex, handleScrollEnd } = useCarouselPaging(SCREEN_PADDING);
 
   if (labs.length === 0) return null;
-
-  function handleScrollEnd(event: NativeSyntheticEvent<NativeScrollEvent>) {
-    const index = Math.round(event.nativeEvent.contentOffset.x / cardWidth);
-    setActiveIndex(index);
-  }
 
   return (
     <View>
@@ -52,32 +44,34 @@ export function FeaturedLabCard({ labs, getStatus, onPressLab }: FeaturedLabCard
         decelerationRate="fast"
       >
         {labs.map((lab) => {
-          const topic = getTopicById(lab.topic);
+          const subject = SUBJECT_META[lab.subject];
+          const cardBg = `${lab.featuredBg ?? subject.color}26`;
           const status = getStatus(lab.id);
 
           return (
-            <View key={lab.id} style={{ width: cardWidth, paddingRight: 5}}>
+            <View key={lab.id} style={{ width: cardWidth, paddingRight: 5 }}>
               <View
                 className="overflow-hidden rounded-[28px] p-6 relative"
-                style={{ backgroundColor: primaryColors.purple, height: CARD_HEIGHT }}
+                style={{ backgroundColor: cardBg, height: CARD_HEIGHT }}
               >
                 <View className="w-[65%] z-10">
-                  <View className="flex-row flex-wrap items-center gap-2">
-                    <Text className="text-[12px] font-poppins-medium text-white/80">
-                      {topic?.title ?? "Physics"}
+                  <View className="flex-row flex-wrap items-center gap-1.5">
+                    <CategoryIcon topic={lab.subject} size={13} color={subject.color} />
+                    <Text className="text-[12px] font-poppins-medium" style={{ color: subject.color }}>
+                      {subject.label}
                     </Text>
                     <LabStatusBadge status={status} />
                   </View>
 
                   <Text
-                    className="mt-1 font-poppins-bold text-white"
+                    className="mt-1 font-poppins-bold text-[#0D132B]"
                     style={{ fontSize: 17, lineHeight: 21, height: 42 }}
                     numberOfLines={2}
                   >
                     {lab.title}
                   </Text>
                   <Text
-                    className="mt-2 font-poppins-regular text-white/80"
+                    className="mt-2 font-poppins-regular text-text-secondary"
                     style={{ fontSize: 12, lineHeight: 16, height: 32 }}
                     numberOfLines={2}
                   >
@@ -107,9 +101,9 @@ export function FeaturedLabCard({ labs, getStatus, onPressLab }: FeaturedLabCard
                   resizeMode="contain"
                 />
 
-                <View className="absolute bottom-4 right-4 z-10 flex-row items-center gap-1 rounded-full bg-black/30 px-3 py-1.5">
-                  <Ionicons name="time-outline" size={12} color="#FFFFFF" />
-                  <Text className="text-[11px] font-poppins-bold text-white">
+                <View className="absolute bottom-4 right-4 z-10 flex-row items-center gap-1 rounded-full bg-white/70 px-3 py-1.5">
+                  <Ionicons name="time-outline" size={12} color={subject.color} />
+                  <Text className="text-[11px] font-poppins-bold text-[#0D132B]">
                     {lab.durationMinutes} min
                   </Text>
                 </View>
@@ -119,21 +113,7 @@ export function FeaturedLabCard({ labs, getStatus, onPressLab }: FeaturedLabCard
         })}
       </ScrollView>
 
-      {labs.length > 1 && (
-        <View className="mt-3 flex-row items-center justify-center gap-1.5">
-          {labs.map((lab, index) => (
-            <View
-              key={lab.id}
-              className="rounded-full"
-              style={{
-                width: index === activeIndex ? 18 : 6,
-                height: 6,
-                backgroundColor: index === activeIndex ? primaryColors.purple : "#E5E7EB",
-              }}
-            />
-          ))}
-        </View>
-      )}
+      <CarouselDots count={labs.length} activeIndex={activeIndex} />
     </View>
   );
 }

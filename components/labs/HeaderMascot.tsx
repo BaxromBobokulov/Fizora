@@ -70,7 +70,7 @@ export function HeaderMascot() {
         <AtomAccent size={22} />
       </View>
 
-      <Image source={images.tulkiLabsHeader} className="h-31 w-56 mr-20" resizeMode="contain" />
+      <Image source={images.tulkiLabsHeaderFlasks} className="h-31 w-56 mr-20" resizeMode="contain" />
     </View>
   );
 }

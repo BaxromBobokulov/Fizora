@@ -1,11 +1,11 @@
 import { ScrollView, Text, TouchableOpacity } from "react-native";
 
 import { neutralColors, primaryColors } from "@/constants/theme/colors";
-import { topics } from "@/data/physics";
-import type { LabTopicId } from "@/types/lab";
+import { SUBJECT_META, SUBJECT_ORDER } from "@/constants/subjects";
+import type { LabSubject } from "@/types/lab";
 import { CategoryIcon, type CategoryIconTopic } from "./CategoryIcon";
 
-export type CategoryFilter = "all" | LabTopicId;
+export type CategoryFilter = "all" | LabSubject | "saved";
 
 type CategoryChipsProps = {
   selected: CategoryFilter;
@@ -21,34 +21,41 @@ export function CategoryChips({ selected, onSelect }: CategoryChipsProps) {
     >
       <Chip
         label="All"
-        topic="all"
+        icon="all"
         color={primaryColors.purple}
         active={selected === "all"}
         onPress={() => onSelect("all")}
       />
-      {topics.map((topic) => (
+      {SUBJECT_ORDER.map((subject) => (
         <Chip
-          key={topic.id}
-          label={topic.title}
-          topic={topic.id}
-          color={topic.color}
-          active={selected === topic.id}
-          onPress={() => onSelect(topic.id)}
+          key={subject}
+          label={SUBJECT_META[subject].label}
+          icon={subject}
+          color={SUBJECT_META[subject].color}
+          active={selected === subject}
+          onPress={() => onSelect(subject)}
         />
       ))}
+      <Chip
+        label="Saved"
+        icon="saved"
+        color={primaryColors.orange}
+        active={selected === "saved"}
+        onPress={() => onSelect("saved")}
+      />
     </ScrollView>
   );
 }
 
 function Chip({
   label,
-  topic,
+  icon,
   color,
   active,
   onPress,
 }: {
   label: string;
-  topic: CategoryIconTopic;
+  icon: CategoryIconTopic;
   color: string;
   active: boolean;
   onPress: () => void;
@@ -63,7 +70,7 @@ function Chip({
         borderColor: active ? primaryColors.purple : neutralColors.border,
       }}
     >
-      <CategoryIcon topic={topic} size={15} color={active ? "#FFFFFF" : color} />
+      <CategoryIcon topic={icon} size={15} color={active ? "#FFFFFF" : color} />
       <Text
         className="text-[13px] font-poppins-bold"
         style={{ color: active ? "#FFFFFF" : neutralColors.textPrimary }}

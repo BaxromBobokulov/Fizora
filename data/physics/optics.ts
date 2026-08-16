@@ -5,6 +5,7 @@ import type { Lab } from "@/types/lab";
 export const opticsLabs: Lab[] = [
   {
     id: "lens-refraction",
+    subject: "physics",
     topic: "optics",
     title: "Lens Refraction",
     description: "Pass light through converging and diverging lenses and trace the rays.",
@@ -19,6 +20,7 @@ export const opticsLabs: Lab[] = [
   },
   {
     id: "light-prism-dispersion",
+    subject: "physics",
     topic: "optics",
     title: "Light Dispersion Through a Prism",
     description: "Split white light into a spectrum using a glass prism.",
@@ -33,6 +35,7 @@ export const opticsLabs: Lab[] = [
   },
   {
     id: "mirror-reflection",
+    subject: "physics",
     topic: "optics",
     title: "Mirror Reflection Laws",
     description: "Explore the law of reflection using plane and curved mirrors.",
@@ -46,6 +49,7 @@ export const opticsLabs: Lab[] = [
   },
   {
     id: "total-internal-reflection",
+    subject: "physics",
     topic: "optics",
     title: "Total Internal Reflection",
     description: "Find the critical angle where light stops refracting and fully reflects.",

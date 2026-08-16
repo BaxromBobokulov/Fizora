@@ -1,16 +1,16 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 import { neutralColors } from "@/constants/theme/colors";
-import type { Topic } from "@/types/lab";
+import type { SubjectMeta } from "@/constants/subjects";
 
-type TopicCardProps = {
-  topic: Topic;
+type SubjectCardProps = {
+  subject: SubjectMeta;
   experimentCount: number;
   completedCount: number;
   onPress: () => void;
 };
 
-export function TopicCard({ topic, experimentCount, completedCount, onPress }: TopicCardProps) {
+export function SubjectCard({ subject, experimentCount, completedCount, onPress }: SubjectCardProps) {
   const progressPercent =
     experimentCount === 0 ? 0 : Math.round((completedCount / experimentCount) * 100);
 
@@ -18,13 +18,13 @@ export function TopicCard({ topic, experimentCount, completedCount, onPress }: T
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.85}
-      className="w-[132px] rounded-[20px] p-3"
-      style={{ backgroundColor: `${topic.color}14` }}
+      className="flex-1 rounded-[20px] p-3"
+      style={{ backgroundColor: subject.tileBackground }}
     >
-      <Image source={topic.image} className="h-15 w-18" resizeMode="cover" />
+      <Image source={subject.icon} className="h-14 w-14" resizeMode="contain" />
 
-      <Text className="mt-2 text-[13px] font-poppins-bold text-[#0D132B]" numberOfLines={1}>
-        {topic.title}
+      <Text className="mt-2 text-[14px] font-poppins-bold text-[#0D132B]" numberOfLines={1}>
+        {subject.label}
       </Text>
       <Text
         className="mt-0.5 text-[10px] font-poppins-medium"
@@ -33,11 +33,18 @@ export function TopicCard({ topic, experimentCount, completedCount, onPress }: T
       >
         {experimentCount} Experiment{experimentCount === 1 ? "" : "s"}
       </Text>
+      <Text
+        className="mt-1 text-[10px] font-poppins-medium leading-[13px]"
+        style={{ color: neutralColors.textSecondary }}
+        numberOfLines={2}
+      >
+        {subject.description}
+      </Text>
 
       <View className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-white">
         <View
           className="h-1.5 rounded-full"
-          style={{ width: `${progressPercent}%`, backgroundColor: topic.color }}
+          style={{ width: `${progressPercent}%`, backgroundColor: subject.color }}
         />
       </View>
     </TouchableOpacity>
