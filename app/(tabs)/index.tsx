@@ -113,7 +113,7 @@ export default function Home() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: neutralColors.surface }}>
       <ScrollView
-        contentContainerClassName="px-5 pb-14 pt-2"
+        contentContainerClassName="px-5 pb-17 pt-2"
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
@@ -198,7 +198,7 @@ export default function Home() {
 
           <Image
             source={images.homeLearningProgress}
-            className="ml-3 h-24 w-24"
+            className="ml-3 h-28 w-28"
             resizeMode="contain"
           />
         </View>

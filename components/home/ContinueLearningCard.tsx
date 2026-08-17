@@ -74,7 +74,7 @@ export function ContinueLearningCard({ labs, isFirstTimeUser, onPressLab }: Cont
 
                 <Image
                   source={lab.image}
-                  className="absolute bottom-2 -right-2 h-36 w-36 z-0"
+                  className="absolute bottom-2 -right-2 h-40 w-40 z-0"
                   resizeMode="contain"
                 />
               </View>

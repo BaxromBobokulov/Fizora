@@ -1,5 +1,7 @@
 import type { ImageSourcePropType } from "react-native";
 
+import type { MicroscopeSpecimenConfig } from "./microscope";
+
 export type LabSubject = "physics" | "chemistry" | "biology";
 
 // Sub-topic/category within a subject. Kept per-subject so a wrong pairing
@@ -46,9 +48,11 @@ export type Lab = {
   image: ImageSourcePropType;
   parameters: LabParameter[];
   // Overrides the subject's brand color as this lab's Featured Lab card
-  // background — e.g. Build a Plant Cell uses green to match its plant/cell
-  // illustration even though Biology's brand color is purple.
+  // background, for a lab whose illustration doesn't match its subject's
+  // brand color.
   featuredBg?: string;
+  // Present only for labs that render the microscope viewport.
+  microscope?: MicroscopeSpecimenConfig;
 };
 
 export type Topic = {

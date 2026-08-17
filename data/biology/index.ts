@@ -1,5 +1,4 @@
 import { images } from "@/constants/images";
-import { primaryColors } from "@/constants/theme/colors";
 import type { Lab } from "@/types/lab";
 
 // Placeholder photos pending real Tulki-style illustrations for the experiments
@@ -15,12 +14,40 @@ export const biologyLabs: Lab[] = [
     difficulty: "beginner",
     durationMinutes: 20,
     image: images.plantCell,
-    // Overrides Biology's purple brand color to match the plant-cell illustration.
-    featuredBg: primaryColors.green,
     parameters: [
       { key: "chloroplastCount", label: "Chloroplast Count", unit: "count", min: 1, max: 20, step: 1, defaultValue: 6 },
       { key: "cellWallThickness", label: "Cell Wall Thickness", unit: "µm", min: 0.1, max: 5, step: 0.1, defaultValue: 1 },
     ],
+  },
+  {
+    id: "microscope-onion-cell",
+    subject: "biology",
+    topic: "cells",
+    title: "Microscope: Onion Cell",
+    description: "Observe onion epidermis cells under a virtual microscope.",
+    dimension: "2d",
+    difficulty: "beginner",
+    durationMinutes: 15,
+    // TODO: placeholder — swap for a real onion-epidermis lab card photo.
+    image: { uri: "https://picsum.photos/seed/microscope-onion-cell/400/300" },
+    parameters: [
+      { key: "magnification", label: "Magnification", unit: "x", min: 100, max: 1000, step: 300, defaultValue: 400 },
+      { key: "focus", label: "Focus", unit: "%", min: 0, max: 100, step: 1, defaultValue: 50 },
+      { key: "lightIntensity", label: "Light Intensity", unit: "%", min: 0, max: 100, step: 1, defaultValue: 50 },
+    ],
+    microscope: {
+      specimenLabel: "Onion Epidermis",
+      idealFocus: 50,
+      // TODO: no real magnification photography exists yet — swap these for
+      // assets/biology/onion-cell-100x.png, -400x.png, -1000x.png once shot/
+      // sourced. Picsum seeds stand in as a distinct image per magnification
+      // level so the crossfade has something real to animate between.
+      images: {
+        100: { uri: "https://picsum.photos/seed/onion-cell-100x/600/600" },
+        400: { uri: "https://picsum.photos/seed/onion-cell-400x/600/600" },
+        1000: { uri: "https://picsum.photos/seed/onion-cell-1000x/600/600" },
+      },
+    },
   },
   {
     id: "human-heart-circulation",

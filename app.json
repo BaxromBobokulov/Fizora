@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Vertual-lab",
-    "slug": "Vertual-lab",
+    "slug": "fizora",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.fizorasteam.fizora"
     },
     "web": {
       "output": "static",
@@ -46,6 +47,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c21e2217-eef4-4e3f-aec3-a47dadbea29e"
+      }
+    },
+    "owner": "fizoras-team"
   }
 }

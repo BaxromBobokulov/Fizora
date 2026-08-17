@@ -12,6 +12,7 @@ type ParameterSliderProps = {
   unit: string;
   onChange: (value: number) => void;
   formatValue?: (value: number) => string;
+  accentColor?: string;
 };
 
 function clampToStep(raw: number, min: number, max: number, step: number): number {
@@ -30,6 +31,7 @@ export function ParameterSlider({
   unit,
   onChange,
   formatValue,
+  accentColor = primaryColors.purple,
 }: ParameterSliderProps) {
   const [trackWidth, setTrackWidth] = useState(0);
   const trackWidthRef = useRef(0);
@@ -58,7 +60,7 @@ export function ParameterSlider({
         <Text className="text-[13px] font-poppins-semibold text-text-primary">{label}</Text>
         <Text
           className="text-[13px] font-poppins-semibold"
-          style={{ color: primaryColors.purple }}
+          style={{ color: accentColor }}
         >
           {displayValue} {unit}
         </Text>
@@ -88,7 +90,7 @@ export function ParameterSlider({
           >
             <View
               className="h-1.5 rounded-full"
-              style={{ width: `${ratio * 100}%`, backgroundColor: primaryColors.purple }}
+              style={{ width: `${ratio * 100}%`, backgroundColor: accentColor }}
             />
           </View>
           {trackWidth > 0 && (
@@ -98,7 +100,7 @@ export function ParameterSlider({
                 left: ratio * trackWidth - 8,
                 top: "50%",
                 marginTop: -8,
-                backgroundColor: primaryColors.purple,
+                backgroundColor: accentColor,
                 shadowColor: "#000",
                 shadowOpacity: 0.15,
                 shadowRadius: 2,
