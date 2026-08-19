@@ -25,6 +25,26 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## Environment variables
+
+Copy `.env.example` to `.env` and fill in real values for local development.
+
+`.env` is gitignored and is **not** available on EAS Build servers. Any `EXPO_PUBLIC_*` variable the app needs at build/runtime (e.g. `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`) must also be registered as an EAS environment variable so it gets injected during cloud builds:
+
+```bash
+eas env:set --environment development --environment preview \
+  --name EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY \
+  --value pk_test_xxxxxxxx \
+  --type string --visibility plaintext
+
+eas env:set --environment production \
+  --name EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY \
+  --value pk_live_xxxxxxxx \
+  --type string --visibility plaintext
+```
+
+Check what's currently set with `eas env:list`.
+
 ## Get a fresh project
 
 When you're ready, run:

@@ -24,6 +24,7 @@ import chemistryIcon from "@/assets/images/labs-ui/chemistry.png";
 import biologyIcon from "@/assets/images/labs-ui/biology.png";
 import physicsIcon from "@/assets/images/physics.png";
 import plantCell from "@/assets/images/labs-ui/plant-cell.png";
+import logOutFox from "@/assets/images/log-out.png";
 
 export const images = {
   mascotLogo,
@@ -52,4 +53,5 @@ export const images = {
   biologyIcon,
   physicsIcon,
   plantCell,
+  logOutFox,
 };

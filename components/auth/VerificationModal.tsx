@@ -91,7 +91,7 @@ export function VerificationModal({ visible, email, mode, onClose }: Verificatio
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable className="flex-1 justify-end bg-black/50" onPress={onClose}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          behavior="padding"
           keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
         >
           <Pressable

@@ -1,4 +1,5 @@
-import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,6 +15,7 @@ import { PremiumBanner } from "@/components/profile/PremiumBanner";
 import { ProgressStatsRow } from "@/components/profile/ProgressStatsRow";
 import { QuickAccessCard } from "@/components/profile/QuickAccessCard";
 import { SettingsListItem } from "@/components/profile/SettingsListItem";
+import { LogOutModal } from "@/components/profile/LogOutModal";
 
 const QUICK_ACCESS = [
   {
@@ -49,6 +51,7 @@ const QUICK_ACCESS = [
 export default function Profile() {
   const router = useRouter();
   const { signOut } = useAuth();
+  const [isLogOutModalVisible, setIsLogOutModalVisible] = useState(false);
 
   const level = useProgressStore((state) => state.level);
   const currentLevelXp = useProgressStore((state) => state.currentLevelXp);
@@ -63,11 +66,9 @@ export default function Profile() {
     return topicLabs.length > 0 && topicLabs.every((lab) => completedLabIds.includes(lab.id));
   }).length;
 
-  function confirmLogOut() {
-    Alert.alert("Log Out", "Are you sure you want to log out?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Log Out", style: "destructive", onPress: () => signOut() },
-    ]);
+  function handleConfirmLogOut() {
+    setIsLogOutModalVisible(false);
+    signOut();
   }
 
   return (
@@ -157,10 +158,16 @@ export default function Profile() {
             label="Log Out"
             danger
             showDivider={false}
-            onPress={confirmLogOut}
+            onPress={() => setIsLogOutModalVisible(true)}
           />
         </View>
       </ScrollView>
+
+      <LogOutModal
+        visible={isLogOutModalVisible}
+        onClose={() => setIsLogOutModalVisible(false)}
+        onConfirm={handleConfirmLogOut}
+      />
     </SafeAreaView>
   );
 }
